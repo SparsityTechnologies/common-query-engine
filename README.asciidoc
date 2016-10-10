@@ -1,7 +1,6 @@
 == Description
-Raquel Pau <rpau@ac.upc.edu>
-
-This is the Common Query Engine (CQE) Server of the CoherentPaas project.
+This is the Common Query Engine (CQE) Server of the CoherentPaas project. The research leading to this code has been partially funded by the 
+European Commission under FP7 programme project #611068.
 
 This server is based on the code Derby database server (10.11.1.1). So, the client JDBC driver is the same than for Derby.
 
