@@ -1,0 +1,5 @@
+org.apache.derby.client
+org.apache.derby.client.am
+org.apache.derby.client.am.stmtcache
+org.apache.derby.client.net
+org.apache.derby.jdbc

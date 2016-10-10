@@ -1,0 +1,38 @@
+{
+  "status": "OK",
+  "sub": [
+    {
+      "name": "a2",
+      "plan": {
+        "op": "NATIVE",
+        "datastore": "python",
+        "code": " ",
+        "params": [
+          { "name": "value", "datatype": "STRING" },
+          { "name": "value2", "datatype": "INT" }
+        ],
+        "columns": [],
+        "signature": []
+      }
+    }
+  ],
+  "plan": {
+    "op": "EXECUTE",
+    "operands": [
+      {
+        "op": "CALL",
+        "sub": "a2",
+        "params": [
+          {
+            "name": "value",
+            "value": { "expr": "param", "name": "1" }
+          },
+          {
+            "name": "value2",
+            "value": { "expr": "param", "name": "2" }
+          }
+        ]
+      }
+    ]
+  }
+}

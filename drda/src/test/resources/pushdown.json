@@ -1,0 +1,200 @@
+{
+  "status": "OK",
+  "sub": [
+{
+      "name": "tbl__1",
+      "params": [
+        { "name": "prm__1", "datatype": "STRING" }
+      ],
+      "plan": {
+        "op": "PROJECT",
+        "operands": [
+          {
+            "op": "CALL",
+            "sub": "communityinfluenceds",
+            "params": [
+              {
+                "name": "wordentrada",
+                "value": { "expr": "param", "name": "prm__1" }
+              }
+            ]
+          }
+        ],
+        "columns": [
+          {
+            "value": { "expr": "colref", "colref": [ "0" ] }
+          },
+          {
+            "value": { "expr": "colref", "colref": [ "1" ] }
+          },
+          {
+            "value": { "expr": "colref", "colref": [ "2" ] }
+          },
+          {
+            "value": { "expr": "colref", "colref": [ "3" ] }
+          },
+          {
+            "value": { "expr": "colref", "colref": [ "4" ] }
+          },
+          {
+            "value": { "expr": "colref", "colref": [ "5" ] }
+          },
+          {
+            "value": { "expr": "colref", "colref": [ "6" ] }
+          },
+          {
+            "value": { "expr": "colref", "colref": [ "7" ] }
+          },
+          {
+            "value": { "expr": "colref", "colref": [ "8" ] }
+          }
+        ],
+        "distinct": "false"
+      }
+  }]
+
+ "plan": {
+    "op": "PROJECT",
+    "operands": [
+      {
+        "op": "JOIN",
+        "operands": [
+          {
+            "op": "PROJECT",
+            "operands": [
+              {
+                "op": "CALL",
+                "sub": "tbl__1",
+                "params": [
+                  {
+                    "name": "prm__1",
+                    "value": { "expr": "param", "name": "1" }
+                  }
+                ]
+              }
+            ],
+            "columns": [
+              {
+                "value": { "expr": "colref", "colref": [ "0" ] }
+              },
+              {
+                "value": { "expr": "colref", "colref": [ "1" ] }
+              },
+              {
+                "value": { "expr": "colref", "colref": [ "2" ] }
+              },
+              {
+                "value": { "expr": "colref", "colref": [ "3" ] }
+              },
+              {
+                "value": { "expr": "colref", "colref": [ "4" ] }
+              },
+              {
+                "value": { "expr": "colref", "colref": [ "5" ] }
+              },
+              {
+                "value": { "expr": "colref", "colref": [ "6" ] }
+              },
+              {
+                "value": { "expr": "colref", "colref": [ "7" ] }
+              },
+              {
+                "value": { "expr": "colref", "colref": [ "8" ] }
+              }
+            ],
+            "distinct": "false"
+          },
+          {
+            "op": "PROJECT",
+            "operands": [
+              {
+                "op": "CALL",
+                "sub": "docs",
+                "params": [
+                  {
+                    "name": "prm__1",
+                    "value": { "expr": "param", "name": "1" }
+                  }
+                ]
+              }
+            ],
+            "columns": [
+              {
+                "value": { "expr": "colref", "colref": [ "0" ] }
+              },
+              {
+                "value": { "expr": "colref", "colref": [ "1" ] }
+              }
+            ],
+            "distinct": "false"
+          }
+        ],
+        "type": "INNER",
+        "condition": {
+          "expr": "func",
+          "function": "=",
+          "operands": [
+            { "expr": "colref", "colref": [ "1", "0" ] },
+            { "expr": "colref", "colref": [ "0", "1" ] }
+          ]
+        },
+        "result": [
+          { "expr": "colref", "colref": [ "0", "0" ] },
+          { "expr": "colref", "colref": [ "1", "0" ] },
+          { "expr": "colref", "colref": [ "2", "0" ] },
+          { "expr": "colref", "colref": [ "3", "0" ] },
+          { "expr": "colref", "colref": [ "4", "0" ] },
+          { "expr": "colref", "colref": [ "5", "0" ] },
+          { "expr": "colref", "colref": [ "6", "0" ] },
+          { "expr": "colref", "colref": [ "7", "0" ] },
+          { "expr": "colref", "colref": [ "8", "0" ] },
+          { "expr": "colref", "colref": [ "1", "1" ] }
+        ]
+      }
+    ],
+    "columns": [
+      {
+        "value": { "expr": "colref", "colref": [ "0" ] },
+        "name": "degreed"
+      },
+      {
+        "value": { "expr": "colref", "colref": [ "1" ] },
+        "name": "iddoc"
+      },
+      {
+        "value": { "expr": "colref", "colref": [ "2" ] },
+        "name": "name"
+      },
+      {
+        "value": { "expr": "colref", "colref": [ "3" ] },
+        "name": "depth"
+      },
+      {
+        "value": { "expr": "colref", "colref": [ "4" ] },
+        "name": "entityid"
+      },
+      {
+        "value": { "expr": "colref", "colref": [ "5" ] },
+        "name": "communityid"
+      },
+      {
+        "value": { "expr": "colref", "colref": [ "6" ] },
+        "name": "degreer"
+      },
+      {
+        "value": { "expr": "colref", "colref": [ "7" ] },
+        "name": "word"
+      },
+      {
+        "value": { "expr": "colref", "colref": [ "8" ] },
+        "name": "weight"
+      },
+      {
+        "value": { "expr": "colref", "colref": [ "9" ] },
+        "name": "text"
+      }
+    ],
+    "distinct": "false"
+  }
+}
+}

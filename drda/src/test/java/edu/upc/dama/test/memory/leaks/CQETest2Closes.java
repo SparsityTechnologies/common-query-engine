@@ -1,0 +1,146 @@
+/* Copyright 2016 Sparsity-Technologies
+ 
+ The research leading to this code has been partially funded by the
+ European Commission under FP7 programme project #611068.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+     http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+package edu.upc.dama.test.memory.leaks;
+
+
+
+
+import java.net.UnknownHostException;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Enumeration;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.coherentpaas.transactionmanager.client.LTMServerProxy;
+import eu.coherentpaas.transactionmanager.client.TxnCtx;
+import eu.coherentpaas.transactionmanager.exception.DataStoreException;
+import eu.coherentpaas.transactionmanager.exception.TransactionManagerException;
+import eu.coherentpaas.transactionmanager.minicluster.TMMiniCluster;
+
+import java.sql.PreparedStatement;
+/**
+ *
+ * @author idezol
+ */
+@Ignore
+public class CQETest2Closes {
+     private static final Logger Log = LoggerFactory.getLogger(CQETest2Closes.class);
+     
+     private LTMServerProxy proxy;
+     
+     private Integer threads = 10;
+    
+    @Test
+    public void firstExample() throws UnknownHostException, TransactionManagerException, DataStoreException, SQLException {
+        Log.info("Starting minicluster, in case it is not yet started");
+       // TMMiniCluster.startMiniCluster(true, 1);
+        
+        Enumeration<Driver> enume = DriverManager.getDrivers();
+		while (enume.hasMoreElements()) {
+			Driver driver = enume.nextElement();
+			System.out.println("driver:" + driver.toString());
+			if (driver.toString().contains("Sparksee")) {
+				DriverManager.deregisterDriver(driver);
+			}
+		}
+		
+		
+
+		Connection conn = DriverManager.getConnection("jdbc:derby://" + "localhost"
+				+ ":1527/seconddb;create=true;;queryLang=cloudmdsql;autoReconnect=true");
+		
+		conn.setAutoCommit(false);
+		
+		String query = "createnode(oid long WITHPARAMS docid string)@python = {*\n"
+				+ "\tyield(1L)\n"
+				+ "*}\n"
+				+ "select oid from createnode('1')";
+
+		PreparedStatement stmt = conn.prepareStatement(query);
+		
+		//BeneUP
+		
+		long time0 = 0;
+		long time1 = 0;
+		long time2 = 0;
+		long time3 = 0;
+		long oidDoc = 0;
+		int i = 0;
+		while(true){
+			try {
+				
+				/*time0 = System.currentTimeMillis();*/
+				//stmt.setString(1, idDoc);
+				stmt.execute();
+				//time1 = System.currentTimeMillis();
+	
+				ResultSet rs = stmt.getResultSet();
+	
+				while (rs.next()) {
+					oidDoc = rs.getLong(1);
+				}
+				rs.close();
+	
+				//time2 = System.currentTimeMillis();
+				
+				
+				//BeneDown
+				
+				//*/
+				//stmt.close(); //sin lo del ResultSet cerramos y no consume más
+				conn.commit();
+				
+				
+				
+				
+				time3 = System.currentTimeMillis();
+				
+				System.out.println((oidDoc+i)+"\t"+(time1-time0)+" execute Document\t"+(time2-time1)+" getResultSet Document\t"+ (time3-time2)+" commit Document");
+				i++;
+			} catch (Exception e) {
+				time1 = System.currentTimeMillis();
+				if(time0!=0){
+					System.out.println((time1-time0)+" execute Document\t"+(time2-time1)+" getResultSet Document\t"+ (time3-time2)+" commit Document");
+				}
+				throw new RuntimeException();
+			}
+		}
+        
+//        proxy=  new LTMServerProxy();
+//        
+//        TxnCtx ctx;
+//        ctx = proxy.startTransaction();
+//		ctx.commit();
+        
+        
+
+        
+       // TMMiniCluster.stopMiniCluster();
+    }
+    
+   
+    
+    
+}

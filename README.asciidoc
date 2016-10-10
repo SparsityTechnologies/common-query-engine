@@ -1,0 +1,90 @@
+== Description
+Raquel Pau <rpau@ac.upc.edu>
+
+This is the Common Query Engine (CQE) Server of the CoherentPaas project.
+
+This server is based on the code Derby database server (10.11.1.1). So, the client JDBC driver is the same than for Derby.
+
+
+== Build and configure the server
+
+1. Run `mvn package assembly:assembly` . It will generate a binary distribution (zip) in `target/cqe-0.0.1-SNAPSHOT-bin.zip`. 
+
+2. Unzip the server in your desired directory to get the CQE server running. This directory is the `CQE_HOME`.
+
+3. Copy the wrapper libs (datastores connectors) into the `{CQE_HOME}/lib` directory.
+
+4. Configure your wrapper parameters. To do that, create a properties file per datastore into the `{CQE_HOME}/config/wrappers/` directory. 
+Each properties file should have the same name than the label that you will use inside the CloudMdQL queries. For example (sparksee.properties,
+ monetdb.properties, derby.properties, mongodb.properties..). Each file should contain at least the following properties:
+
+[source,java]
+----
+wrapper.class = eu.coherentpaas.wrapper.MockDatastore #the wrapper implementation for Datastore
+wrapper.name = mock #the label for that datastore
+wrapper.transactional.client = #the transactional client implementation
+#other custom properties.
+----
+The `{CQE_HOME}/samples` folder contains an configuration example for each datastore.
+
+5. Go to the `{CQE_HOME}/bin` directory and run `./startNetworkServer` (add execution priviledges). The default connection 
+URL is jdbc:derby://localhost:1527. If you want to launch the server using a different port run `./startNetworkServer -p yourPort`.
+
+
+== Remote debug mode
+
+Edit the  `{CQE_HOME}/bin/startNetworkServer` and uncomment the following line (appears at the bottom):
+
+[source,bash]
+----
+
+DERBY_DEBUG_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044"
+----
+
+=== Client side (JDBC)
+
+1. Add the following dependency into your Maven project.
+
+[source,xml]
+----
+
+   <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derbyclient</artifactId>
+      <version>10.11.1.1</version>
+   </dependency>
+---- 
+
+2. Connect by JDBC.
+
+[source,java]
+----
+    String EXTERNAL_DRIVER = "org.apache.derby.jdbc.ClientDriver";
+    try {
+        Class.forName(EXTERNAL_DRIVER);
+    } catch (ClassNotFoundException e) {
+        throw new SQLException("Could not find class " + EXTERNAL_DRIVER);
+    }
+
+    Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/seconddb;create=true;");
+
+    String t1 = "T1( x int, y string )@python = {* yield (1, 'abc') *} \n";
+    String t2 = "T2( x int, y string ) = ( SELECT T1.x, T1.y FROM T1 ) \n";
+    String query = t1 + t2 +"SELECT T2.x, T2.y FROM T2 WHERE T2.x = 1 AND T2.x = 2";
+    PreparedStatement stmt = null; 
+    ResultSet rs = null;
+    try{
+        stmt = conn.prepareStatement(query);
+        stmt.execute();
+        rs = stmt.getResultSet();
+		
+        while (rs.next()) {
+            System.out.println("row " + rs.getRow() + ": " + rs.getInt(1)
+                + ", " + rs.getString(2));
+        }
+    }finally{
+        if(rs != null) rs.close();
+        if(stmt != null) stmt.close();
+        if(conn != null) conn.close();
+    }
+----

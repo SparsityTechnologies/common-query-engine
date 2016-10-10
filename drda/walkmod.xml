@@ -1,0 +1,16 @@
+<!DOCTYPE walkmod PUBLIC "-//WALKMOD//DTD" "http://www.walkmod.com/dtd/walkmod-1.1.dtd">
+<walkmod>
+    <chain name="default">
+        <transformation type="license-applier">
+            <param name="licenseFile">LICENSE.txt</param>
+        </transformation>
+        <writer path="src/main/java" type="javalang:string-writer"/>
+    </chain>
+    <chain name="test">
+        <reader path="src/test/java" />
+        <transformation type="license-applier">
+            <param name="licenseFile">LICENSE.txt</param>
+        </transformation>
+        <writer path="src/test/java" type="javalang:string-writer"/>
+    </chain>
+</walkmod>
